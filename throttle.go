@@ -2,16 +2,14 @@ package throttle
 
 import "time"
 
-type Throttle chan bool
+type Throttle chan struct{}
 
 // create throttle
 func NewThrottle(limit uint) Throttle {
 	var limiter Throttle
 
 	// 0 is unlimited
-	if limit == 0 {
-		limiter = nil
-	} else {
+	if limit != 0 {
 		limiter = make(Throttle, limit)
 	}
 
@@ -23,7 +21,7 @@ func (t Throttle) Increase() {
 	if t == nil {
 		return
 	}
-	t <- true
+	t <- struct{}{}
 }
 
 // decrease throttle count
@@ -49,4 +47,3 @@ func (t Throttle) Close() {
 	}
 	close(t)
 }
-
